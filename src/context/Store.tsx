@@ -27,7 +27,7 @@ type State = {
 
 type Action =
   | {
-      type: 'UPDATE_BUILDER_OPERATOR';
+      type: 'UPDATE_ELEMENT';
       payload: any;
     }
   | { type: 'ADD_ELEMENT'; payload: any };
@@ -43,6 +43,7 @@ const initialState: State = {
       {
         type: 'Dropdown',
         value: 'Testing1',
+        id: 'jkfaldsjfkdsfljkd',
       },
       {
         operator: 'And',
@@ -50,16 +51,19 @@ const initialState: State = {
         depth: 1,
         rules: [
           {
+            id: 'kfadsfjksdl',
             type: 'Text',
             value: 'testing fadsf',
           },
           {
-            type: 'DropDown',
+            id: 'kfdaslfksd',
+            type: 'Dropdown',
             value: 'testing fadsf',
           },
         ],
       },
       {
+        id: 'kfaldsjkkfdsjfalskd',
         type: 'Dropdown',
         value: 'Testing1',
       },
@@ -73,8 +77,13 @@ const reducer = (state: State, action: Action): State => {
   const { payload, type } = action;
 
   switch (type) {
-    case 'UPDATE_BUILDER_OPERATOR':
-      return updateBuilder(state);
+    case 'UPDATE_ELEMENT':
+      return updateElement(
+        state,
+        payload.targetElementId,
+        payload.keyToUpdate,
+        payload.value
+      );
     case 'ADD_ELEMENT':
       return addElement(state, payload.builderId, payload.rule);
     default:
@@ -83,15 +92,6 @@ const reducer = (state: State, action: Action): State => {
 };
 
 const addElement = (state: State, builderId: string, rule: Element) => {
-  if (builderId === 'root') {
-    return {
-      ...state,
-      builder: {
-        ...state.builder,
-        rules: [...state.builder.rules, rule],
-      },
-    };
-  }
   const updatedBuilder = traverseAndAddRule(state.builder, builderId, rule);
   return {
     ...state,
@@ -99,17 +99,48 @@ const addElement = (state: State, builderId: string, rule: Element) => {
   };
 };
 
-const traverseAndUpdate = (
+const traverseAndUpdateRule = (
   object: any,
-  targetBuilderId: any,
-  keyToUpdate: any,
+  targetElementId: any,
+  keyToUpdate: string,
   value: any
-) => {
-  if (object.id === targetBuilderId) {
-    object[keyToUpdate] = value;
-  } else {
-    traverseAndUpdate(object.rules[0], targetBuilderId, keyToUpdate, value);
+): any => {
+  if (object.id === targetElementId) {
+    if (keyToUpdate in object) {
+      return {
+        ...object,
+        [keyToUpdate]: value,
+      };
+    } else {
+      return object;
+    }
   }
+
+  const updatedRules = object.rules.map((nestedElement: any) => {
+    if ('operator' in nestedElement) {
+      return traverseAndUpdateRule(
+        nestedElement,
+        targetElementId,
+        keyToUpdate,
+        value
+      );
+    } else if (nestedElement.id === targetElementId) {
+      if (keyToUpdate in nestedElement) {
+        return {
+          ...nestedElement,
+          [keyToUpdate]: value,
+        };
+      } else {
+        return nestedElement;
+      }
+    }
+    return nestedElement;
+  });
+
+  return {
+    ...object,
+    rules: updatedRules,
+  };
 };
 
 const traverseAndAddRule = (
@@ -137,9 +168,23 @@ const traverseAndAddRule = (
   };
 };
 
-
-const updateBuilder = (state: State) => {
-  return state;
+const updateElement = (
+  state: State,
+  targetElementId: any,
+  keyToUpdate: any,
+  value: any
+) => {
+  console.log(state, keyToUpdate, targetElementId, value);
+  const updatedBuilder = traverseAndUpdateRule(
+    state.builder,
+    targetElementId,
+    keyToUpdate,
+    value
+  );
+  return {
+    ...state,
+    builder: updatedBuilder,
+  };
 };
 
 const StoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {

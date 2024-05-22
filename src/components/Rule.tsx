@@ -8,7 +8,14 @@ const Rule: React.FC<any> = ({
   return (
     <div style={{ margin: '20px' }}>
       <select
-        onChange={(e) => updateRule({ type: e.target.value, ruleId: rule.id })}
+        value={rule.type}
+        onChange={(e) =>
+          updateRule({
+            value: e.target.value,
+            ruleId: rule.id,
+            keyToUpdate: 'type',
+          })
+        }
       >
         <option>Dropdown</option>
         <option>Text</option>
@@ -26,7 +33,11 @@ const Rule: React.FC<any> = ({
         <select
           value={rule.value}
           onChange={(e) =>
-            updateRule({ value: e.target.value, ruleId: rule.id })
+            updateRule({
+              value: e.target.value,
+              ruleId: rule.id,
+              keyToUpdate: 'value',
+            })
           }
         >
           <option>Testing</option>
@@ -37,7 +48,11 @@ const Rule: React.FC<any> = ({
         <input
           value={rule.value}
           onChange={(e) =>
-            updateRule({ value: e.target.value, ruleId: rule.id })
+            updateRule({
+              value: e.target.value,
+              ruleId: rule.id,
+              keyToUpdate: 'value',
+            })
           }
         />
       )}

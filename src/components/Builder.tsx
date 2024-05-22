@@ -5,13 +5,33 @@ import Rule from './Rule';
 const Builder: React.FC<any> = ({ builder }) => {
   const { dispatch } = useStore();
 
+  function updateRule({
+    ruleId,
+    keyToUpdate,
+    value,
+  }: {
+    ruleId: string;
+    keyToUpdate: string;
+    value: string;
+  }) {
+    dispatch({
+      type: 'UPDATE_ELEMENT',
+      payload: {
+        targetElementId: ruleId,
+        keyToUpdate,
+        value,
+      },
+    });
+  }
+
   function addRule() {
-    console.log('new value', 'function called')
+    console.log('new value', 'function called');
     dispatch({
       type: 'ADD_ELEMENT',
       payload: {
         builderId: builder.id,
         rule: {
+          id: generateUniqueId(),
           type: '',
           value: '',
         },
@@ -47,7 +67,7 @@ const Builder: React.FC<any> = ({ builder }) => {
             <Builder key={ruleOrBuilder.id} builder={ruleOrBuilder} />
           </div>
         ) : (
-          <Rule key={index} rule={ruleOrBuilder} />
+          <Rule key={index} rule={ruleOrBuilder} updateRule={updateRule} />
         )
       )}
       <button onClick={addRule}>Add Rule</button>
