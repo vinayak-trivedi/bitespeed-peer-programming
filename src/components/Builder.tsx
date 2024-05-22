@@ -44,7 +44,7 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
       payload: {
         builderId: builder.id,
         rule: {
-          operator: 'And',
+          operator: 'AND',
           rules: [
             {
               type: 'Dropdown',
@@ -99,6 +99,7 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
               <option>OR</option>
             </select>
           )}
+          {index > 1 && <p>{builder.operator}</p>}
           {'operator' in ruleOrBuilder ? (
             <div style={{ margin: '10px' }}>
               <Builder key={ruleOrBuilder.id} builder={ruleOrBuilder} />

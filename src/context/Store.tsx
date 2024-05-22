@@ -38,7 +38,7 @@ const StoreContext = createContext<
 
 const initialState: State = {
   builder: {
-    operator: '',
+    operator: 'AND',
     rules: [
       {
         type: 'Dropdown',
