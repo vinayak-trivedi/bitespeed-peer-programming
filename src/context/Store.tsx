@@ -30,7 +30,8 @@ type Action =
       type: 'UPDATE_ELEMENT';
       payload: any;
     }
-  | { type: 'ADD_ELEMENT'; payload: any };
+  | { type: 'ADD_ELEMENT'; payload: any }
+  | { type: 'DELETE_ELEMENT'; payload: any };
 
 const StoreContext = createContext<
   { state: State; dispatch: Dispatch<Action> } | undefined
@@ -86,9 +87,20 @@ const reducer = (state: State, action: Action): State => {
       );
     case 'ADD_ELEMENT':
       return addElement(state, payload.builderId, payload.rule);
+    case 'DELETE_ELEMENT':
+      return deleteElement(state, payload.targetElementId);
     default:
       return state;
   }
+};
+
+const deleteElement = (state: State, elementId: string) => {
+  const updatedBuilder = traverseAndDeleteElement(state.builder, elementId);
+
+  return {
+    ...state,
+    builder: updatedBuilder,
+  };
 };
 
 const addElement = (state: State, builderId: string, rule: Element) => {
@@ -165,6 +177,30 @@ const traverseAndAddRule = (
   return {
     ...object,
     rules: updatedRules,
+  };
+};
+
+const traverseAndDeleteElement = (object: any, targetElementId: any): any => {
+  if (object.id === targetElementId) {
+    return null;
+  }
+
+  const updatedRules = object.rules.map((nestedElement: any) => {
+    if ('operator' in nestedElement) {
+      return traverseAndDeleteElement(nestedElement, targetElementId);
+    } else if (nestedElement.id === targetElementId) {
+      return null;
+    }
+    return nestedElement;
+  });
+
+  // Filter out null elements (deleted elements) from the updatedRules array
+  const filteredRules = updatedRules.filter((element: any) => element !== null);
+
+  // Return the object with filtered rules array
+  return {
+    ...object,
+    rules: filteredRules,
   };
 };
 

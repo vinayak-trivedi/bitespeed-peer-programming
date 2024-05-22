@@ -1,18 +1,21 @@
-const Rule: React.FC<any> = ({
-  updateRule,
-  rule,
-  shouldShowAnd,
-  operator,
-  updateOperator,
-}) => {
+const Rule: React.FC<any> = ({ updateElement, rule, deleteElement }) => {
   return (
-    <div style={{ margin: '20px' }}>
+    <div
+      style={{
+        margin: '10px',
+        display: 'flex',
+        gap: '20px',
+        flexShrink: 0,
+        padding: '15px',
+      }}
+    >
+      <p>Rule</p>
       <select
         value={rule.type}
         onChange={(e) =>
-          updateRule({
+          updateElement({
             value: e.target.value,
-            ruleId: rule.id,
+            elementId: rule.id,
             keyToUpdate: 'type',
           })
         }
@@ -20,22 +23,13 @@ const Rule: React.FC<any> = ({
         <option>Dropdown</option>
         <option>Text</option>
       </select>
-      {shouldShowAnd && (
-        <select
-          value={operator}
-          onChange={(e) => updateOperator({ operator: e.target.value })}
-        >
-          <option>AND</option>
-          <option>OR</option>
-        </select>
-      )}
       {rule.type === 'Dropdown' ? (
         <select
           value={rule.value}
           onChange={(e) =>
-            updateRule({
+            updateElement({
               value: e.target.value,
-              ruleId: rule.id,
+              elementId: rule.id,
               keyToUpdate: 'value',
             })
           }
@@ -48,7 +42,7 @@ const Rule: React.FC<any> = ({
         <input
           value={rule.value}
           onChange={(e) =>
-            updateRule({
+            updateElement({
               value: e.target.value,
               ruleId: rule.id,
               keyToUpdate: 'value',
@@ -56,6 +50,9 @@ const Rule: React.FC<any> = ({
           }
         />
       )}
+      <button onClick={() => deleteElement({ elementId: rule?.id })}>
+        Delete
+      </button>
     </div>
   );
 };
