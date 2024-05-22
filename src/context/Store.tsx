@@ -18,7 +18,6 @@ type Builder = {
   operator: string;
   rules: Element[];
   id: string;
-  depth: number;
 };
 
 type State = {
@@ -45,32 +44,9 @@ const initialState: State = {
         type: 'Dropdown',
         value: 'Testing1',
         id: 'jkfaldsjfkdsfljkd',
-      },
-      {
-        operator: 'And',
-        id: 'someting',
-        depth: 1,
-        rules: [
-          {
-            id: 'kfadsfjksdl',
-            type: 'Text',
-            value: 'testing fadsf',
-          },
-          {
-            id: 'kfdaslfksd',
-            type: 'Dropdown',
-            value: 'testing fadsf',
-          },
-        ],
-      },
-      {
-        id: 'kfaldsjkkfdsjfalskd',
-        type: 'Dropdown',
-        value: 'Testing1',
-      },
+      }
     ],
     id: 'root',
-    depth: 0,
   },
 };
 
@@ -194,10 +170,8 @@ const traverseAndDeleteElement = (object: any, targetElementId: any): any => {
     return nestedElement;
   });
 
-  // Filter out null elements (deleted elements) from the updatedRules array
   const filteredRules = updatedRules.filter((element: any) => element !== null);
 
-  // Return the object with filtered rules array
   return {
     ...object,
     rules: filteredRules,
@@ -210,7 +184,6 @@ const updateElement = (
   keyToUpdate: any,
   value: any
 ) => {
-  console.log(state, keyToUpdate, targetElementId, value);
   const updatedBuilder = traverseAndUpdateRule(
     state.builder,
     targetElementId,

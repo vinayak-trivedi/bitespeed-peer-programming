@@ -1,4 +1,9 @@
-const Rule: React.FC<any> = ({ updateElement, rule, deleteElement }) => {
+const Rule: React.FC<any> = ({
+  updateElement,
+  rule,
+  deleteElement,
+  shouldHideDeleteButton,
+}) => {
   return (
     <div
       style={{
@@ -7,6 +12,7 @@ const Rule: React.FC<any> = ({ updateElement, rule, deleteElement }) => {
         gap: '20px',
         flexShrink: 0,
         padding: '15px',
+        border: '1px solid black',
       }}
     >
       <p>Rule</p>
@@ -50,9 +56,9 @@ const Rule: React.FC<any> = ({ updateElement, rule, deleteElement }) => {
           }
         />
       )}
-      <button onClick={() => deleteElement({ elementId: rule?.id })}>
+      {!shouldHideDeleteButton && <button onClick={() => deleteElement({ elementId: rule?.id })}>
         Delete
-      </button>
+      </button>}
     </div>
   );
 };

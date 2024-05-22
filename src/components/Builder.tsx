@@ -2,7 +2,7 @@ import { useStore } from '../context/Store';
 import { generateUniqueId } from '../utils/apputils';
 import Rule from './Rule';
 
-const Builder: React.FC<any> = ({ builder }) => {
+const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
   const { dispatch } = useStore();
 
   function updateElement({
@@ -47,7 +47,7 @@ const Builder: React.FC<any> = ({ builder }) => {
           operator: 'And',
           rules: [
             {
-              type: 'Text',
+              type: 'Dropdown',
               value: '',
             },
           ],
@@ -71,12 +71,17 @@ const Builder: React.FC<any> = ({ builder }) => {
     <div
       style={{
         margin: '20px',
-        border: '1px solid grey',
+        border: '1px solid lightgrey',
         width: '90%',
         padding: '10px',
       }}
     >
       <p>Rule group</p>
+      {!shouldHideDeleteButton && builder.id !== 'root' && (
+        <button onClick={() => deleteElement({ elementId: builder?.id })}>
+          Delete builder
+        </button>
+      )}
       {builder.rules.map((ruleOrBuilder: any, index: any) => (
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {index === 1 && (
@@ -101,15 +106,11 @@ const Builder: React.FC<any> = ({ builder }) => {
           ) : (
             <Rule
               key={index}
+              shouldHideDeleteButton={shouldHideDeleteButton}
               rule={ruleOrBuilder}
               updateElement={updateElement}
               deleteElement={deleteElement}
             />
-          )}
-          {builder.id !== 'root' && (
-            <button onClick={() => deleteElement({ elementId: builder?.id })}>
-              Delete
-            </button>
           )}
         </div>
       ))}

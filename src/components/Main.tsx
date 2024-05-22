@@ -3,7 +3,13 @@ import Builder from './Builder';
 
 const Main = () => {
   const { builder } = useStore();
-  return <Builder builder={builder} />;
+  const shouldHideDeleteButton = builder.rules.length === 1;
+  return (
+    <Builder
+      builder={builder}
+      shouldHideDeleteButton={shouldHideDeleteButton}
+    />
+  );
 };
 
 export default Main;
