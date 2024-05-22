@@ -5,9 +5,8 @@ const Rule: React.FC<any> = ({
   operator,
   updateOperator,
 }) => {
-
   return (
-    <div>
+    <div style={{ margin: '20px' }}>
       <select
         onChange={(e) => updateRule({ type: e.target.value, ruleId: rule.id })}
       >

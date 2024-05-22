@@ -28,9 +28,9 @@ type State = {
 type Action =
   | {
       type: 'UPDATE_BUILDER_OPERATOR';
-      payload: { builderId: string; operator: string };
+      payload: any;
     }
-  | { type: 'ADD_BUILDER'; payload: { parentId: string; element: Builder } };
+  | { type: 'ADD_ELEMENT'; payload: any };
 
 const StoreContext = createContext<
   { state: State; dispatch: Dispatch<Action> } | undefined
@@ -75,16 +75,68 @@ const reducer = (state: State, action: Action): State => {
   switch (type) {
     case 'UPDATE_BUILDER_OPERATOR':
       return updateBuilder(state);
-    case 'ADD_BUILDER':
-      return addBuilder(state);
+    case 'ADD_ELEMENT':
+      return addElement(state, payload.builderId, payload.rule);
     default:
       return state;
   }
 };
 
-const addBuilder = (state: State) => {
-  return state;
+const addElement = (state: State, builderId: string, rule: Element) => {
+  if (builderId === 'root') {
+    return {
+      ...state,
+      builder: {
+        ...state.builder,
+        rules: [...state.builder.rules, rule],
+      },
+    };
+  }
+  const updatedBuilder = traverseAndAddRule(state.builder, builderId, rule);
+  return {
+    ...state,
+    builder: updatedBuilder,
+  };
 };
+
+const traverseAndUpdate = (
+  object: any,
+  targetBuilderId: any,
+  keyToUpdate: any,
+  value: any
+) => {
+  if (object.id === targetBuilderId) {
+    object[keyToUpdate] = value;
+  } else {
+    traverseAndUpdate(object.rules[0], targetBuilderId, keyToUpdate, value);
+  }
+};
+
+const traverseAndAddRule = (
+  object: any,
+  targetBuilderId: any,
+  rule: Element
+): any => {
+  if (object.id === targetBuilderId) {
+    return {
+      ...object,
+      rules: [...object.rules, rule],
+    };
+  }
+
+  const updatedRules = object.rules.map((nestedRule: any) => {
+    if ('operator' in nestedRule) {
+      return traverseAndAddRule(nestedRule, targetBuilderId, rule);
+    }
+    return nestedRule;
+  });
+
+  return {
+    ...object,
+    rules: updatedRules,
+  };
+};
+
 
 const updateBuilder = (state: State) => {
   return state;

@@ -1,9 +1,46 @@
+import { useStore } from '../context/Store';
+import { generateUniqueId } from '../utils/apputils';
 import Rule from './Rule';
 
 const Builder: React.FC<any> = ({ builder }) => {
-  console.log(builder, 'jfaksdjflsdkfjsdafalakdsjf');
+  const { dispatch } = useStore();
+
+  function addRule() {
+    console.log('new value', 'function called')
+    dispatch({
+      type: 'ADD_ELEMENT',
+      payload: {
+        builderId: builder.id,
+        rule: {
+          type: '',
+          value: '',
+        },
+      },
+    });
+  }
+
+  function addRuleGroup() {
+    dispatch({
+      type: 'ADD_ELEMENT',
+      payload: {
+        builderId: builder.id,
+        rule: {
+          operator: 'And',
+          rules: [
+            {
+              type: '',
+              value: '',
+            },
+          ],
+          id: generateUniqueId(),
+          depth: 0,
+        },
+      },
+    });
+  }
+
   return (
-    <div style={{ margin: '20px' }}>
+    <div style={{ margin: '20px', border: '1px solid grey' }}>
       {builder.rules.map((ruleOrBuilder: any, index: any) =>
         'operator' in ruleOrBuilder ? (
           <div style={{ margin: '10px' }}>
@@ -13,6 +50,8 @@ const Builder: React.FC<any> = ({ builder }) => {
           <Rule key={index} rule={ruleOrBuilder} />
         )
       )}
+      <button onClick={addRule}>Add Rule</button>
+      <button onClick={addRuleGroup}>Add Rule Group</button>
     </div>
   );
 };
