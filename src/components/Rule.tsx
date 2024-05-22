@@ -50,7 +50,7 @@ const Rule: React.FC<any> = ({
           onChange={(e) =>
             updateElement({
               value: e.target.value,
-              ruleId: rule.id,
+              elementId: rule.id,
               keyToUpdate: 'value',
             })
           }
