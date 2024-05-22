@@ -106,6 +106,11 @@ const Builder: React.FC<any> = ({ builder }) => {
               deleteElement={deleteElement}
             />
           )}
+          {builder.id !== 'root' && (
+            <button onClick={() => deleteElement({ elementId: builder?.id })}>
+              Delete
+            </button>
+          )}
         </div>
       ))}
       <button onClick={addRule}>Add Rule</button>
