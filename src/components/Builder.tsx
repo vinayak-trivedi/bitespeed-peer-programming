@@ -47,6 +47,7 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
           operator: 'AND',
           rules: [
             {
+              id: generateUniqueId(),
               type: 'Dropdown',
               value: '',
             },
