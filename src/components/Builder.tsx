@@ -45,6 +45,7 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
         builderId: builder.id,
         rule: {
           operator: 'AND',
+          depth: builder.depth + 1,
           rules: [
             {
               id: generateUniqueId(),
@@ -53,7 +54,6 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
             },
           ],
           id: generateUniqueId(),
-          depth: 0,
         },
       },
     });
@@ -84,7 +84,10 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
         </button>
       )}
       {builder.rules.map((ruleOrBuilder: any, index: any) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div
+          key={ruleOrBuilder.id}
+          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+        >
           {index === 1 && (
             <select
               value={builder.operator}
@@ -117,7 +120,9 @@ const Builder: React.FC<any> = ({ builder, shouldHideDeleteButton }) => {
         </div>
       ))}
       <button onClick={addRule}>Add Rule</button>
-      <button onClick={addRuleGroup}>Add Rule Group</button>
+      <button disabled={builder.depth === 2} onClick={addRuleGroup}>
+        Add Rule Group
+      </button>
     </div>
   );
 };

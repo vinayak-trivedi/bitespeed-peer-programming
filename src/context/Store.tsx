@@ -18,6 +18,7 @@ type Builder = {
   operator: string;
   rules: Element[];
   id: string;
+  depth: number;
 };
 
 type State = {
@@ -39,6 +40,7 @@ const StoreContext = createContext<
 const initialState: State = {
   builder: {
     operator: 'AND',
+    depth: 0,
     rules: [
       {
         type: 'Dropdown',
